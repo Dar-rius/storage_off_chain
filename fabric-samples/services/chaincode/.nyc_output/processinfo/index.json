@@ -1,0 +1,1 @@
+{"processes":{"1e0d11e0-a270-4cc7-8936-52637dc306cf":{"parent":null,"children":[]},"f6238cfa-19bd-42cc-8638-8c7832ff477c":{"parent":null,"children":[]}},"files":{"/home/darrius/project/hyperLedger/fabric-samples/services/chaincode/lib/autonomiWasm.js":["1e0d11e0-a270-4cc7-8936-52637dc306cf","f6238cfa-19bd-42cc-8638-8c7832ff477c"]},"externalIds":{}}
