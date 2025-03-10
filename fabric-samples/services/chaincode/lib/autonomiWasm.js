@@ -25,9 +25,9 @@ class AutonomiWasm extends Contract {
     }
   }
 
-  // CreateAsset issues a new asset to the world state with given details.
-  async CreateAsset(ctx, id, pk) {
-    const exists = await this.AssetExists(ctx, id);
+  // CreateUser issues a new user to the world state with given details.
+  async CreateUser(ctx, id, pk) {
+    const exists = await this.UserExists(ctx, id);
     if (exists) {
       throw new Error(`The asset ${id} already exists`);
     }
@@ -44,51 +44,51 @@ class AutonomiWasm extends Contract {
     return JSON.stringify(account);
   }
 
-  // ReadAsset returns the asset stored in the world state with given id.
-  async ReadAsset(ctx, id) {
+  // FoundUser returns the user stored in the world state with given id.
+  async FoundUser(ctx, id) {
     const assetJSON = await ctx.stub.getState(id); // get the asset from chaincode state
     if (!assetJSON || assetJSON.length === 0) {
-      throw new Error(`The asset ${id} does not exist`);
+      throw new Error(`The user ${id} does not exist`);
     }
     return assetJSON.toString();
   }
 
-  // UpdateAsset updates an existing asset in the world state with provided parameters.
-  async UpdateAsset(ctx, id, pk) {
-    const exists = await this.AssetExists(ctx, id);
+  // AddUser updates an existing user in the world state with provided parameters.
+  async AddUser(ctx, id, pk) {
+    const exists = await this.UserExists(ctx, id);
     if (!exists) {
-      throw new Error(`The asset ${id} does not exist`);
+      throw new Error(`The user ${id} does not exist`);
     }
 
     // overwriting original asset with new asset
-    const updatedAsset = {
+    const updatedUser = {
       ID: id,
       PK: pk,
     };
     // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
     return ctx.stub.putState(
       id,
-      Buffer.from(stringify(sortKeysRecursive(updatedAsset))),
+      Buffer.from(stringify(sortKeysRecursive(updatedUser))),
     );
   }
 
-  // AssetExists returns true when asset with given ID exists in world state.
-  async AssetExists(ctx, id) {
+  // UserExists returns true when asset with given ID exists in world state.
+  async UserExists(ctx, id) {
     const assetJSON = await ctx.stub.getState(id);
     return assetJSON && assetJSON.length > 0;
   }
 
-  // DeleteAsset deletes an given asset from the world state.
-  async DeleteAsset(ctx, id) {
-    const exists = await this.AssetExists(ctx, id);
+  // DeleteUser deletes an given asset from the world state.
+  async DeleteUser(ctx, id) {
+    const exists = await this.UserExists(ctx, id);
     if (!exists) {
-      throw new Error(`The asset ${id} does not exist`);
+      throw new Error(`The user ${id} does not exist`);
     }
     return ctx.stub.deleteState(id);
   }
 
-  // GetAllAssets returns all assets found in the world state.
-  async GetAllAssets(ctx) {
+  // GetAllUser returns all assets found in the world state.
+  async GetAllUser(ctx) {
     const allResults = [];
     // range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
     const iterator = await ctx.stub.getStateByRange("", "");
@@ -110,8 +110,9 @@ class AutonomiWasm extends Contract {
     return JSON.stringify(allResults);
   }
 
+  //InsertData, add data in Autonomi
   async InsertData(ctx, id, message) {
-    let accountJson = await this.ReadAsset(ctx, id);
+    let accountJson = await this.FoundUser(ctx, id);
     const account = JSON.parse(accountJson);
     try {
       let res = await axios.post("http://172.17.0.1:3000/insertData", {
@@ -125,6 +126,7 @@ class AutonomiWasm extends Contract {
     }
   }
 
+  //RetrieveData, retrieve data from Autonomi
   async RetrieveData(ctx, addr) {
     try {
       let res = await axios.post("http://172.17.0.1:3000/retrieveData", {
@@ -138,8 +140,9 @@ class AutonomiWasm extends Contract {
     }
   }
 
+  //InsertFile, insert files in Autonomi
   async InsertFile(ctx, id, path) {
-    let accountJson = await this.ReadAsset(ctx, id);
+    let accountJson = await this.FoundUser(ctx, id);
     const account = JSON.parse(accountJson);
     try {
       let res = await axios.post("http://172.17.0.1:3000/insertFile", {
@@ -154,6 +157,7 @@ class AutonomiWasm extends Contract {
     }
   }
 
+  //RetrieveFile, retrieve file from Autonomi
   async RetrieveFile(ctx, addr, dest) {
     try {
       let res = await axios.post("http://172.17.0.1:3000/retrieveFile", {

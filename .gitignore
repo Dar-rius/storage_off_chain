@@ -87,3 +87,10 @@ fabric-samples/install-fabric.sh
 
 # Service Rust
 fabric-samples/services/target/
+fabric-samples/services/chaincode/package-lock.json
+fabric-samples/services/chaincode/node_modules
+fabric-samples/services/chaincode/.
+fabric-samples/services/chaincode/coverage
+
+# react 
+app/
